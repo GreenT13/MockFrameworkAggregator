@@ -8,9 +8,9 @@
     <groupId>com.keylane</groupId>
     <artifactId>MockFrameworkAggregator</artifactId>
     <version>1.0-SNAPSHOT</version>
-	<packaging>pom</packaging>
+    <packaging>pom</packaging>
 
-	<name>MockFrameworkAggregator</name>
+    <name>MockFrameworkAggregator</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -33,7 +33,7 @@
 
     <modules>
         <module>MockFramework</module>
-		<module>MockFrameworkReference</module>
-	</modules>
+        <module>MockFrameworkReference</module>
+    </modules>
 
 </project>
