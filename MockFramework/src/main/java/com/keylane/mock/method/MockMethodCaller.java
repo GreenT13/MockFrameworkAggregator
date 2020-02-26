@@ -20,7 +20,7 @@ import java.util.Map;
  */
 public class MockMethodCaller {
 
-    public Response callMethod(Method method, HttpServletRequest httpServletRequest) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    public Object callMethod(Method method, HttpServletRequest httpServletRequest) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         List<Object> args = new ArrayList<>();
         for (Parameter parameter : method.getParameters()) {
             MockParameterType mockParameterType = determineMockParameterType(parameter);
@@ -28,7 +28,7 @@ public class MockMethodCaller {
         }
 
         Object mockUrlContainer = method.getDeclaringClass().getDeclaredConstructor().newInstance();
-        return (Response) method.invoke(mockUrlContainer, args.toArray());
+        return method.invoke(mockUrlContainer, args.toArray());
     }
 
     private MockParameterType determineMockParameterType(Parameter parameter) {

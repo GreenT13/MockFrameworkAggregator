@@ -33,7 +33,7 @@ public class MockServlet extends HttpServlet {
         MockMethodCaller mockMethodCaller = new MockMethodCaller();
         Response response;
         try {
-            response = mockMethodCaller.callMethod(method, httpServletRequest);
+            response = (Response) mockMethodCaller.callMethod(method, httpServletRequest);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
             throw new ServletException(e);
         }
