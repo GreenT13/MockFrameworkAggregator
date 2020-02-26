@@ -13,8 +13,22 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+/**
+ * Servlet which finds the right mock method to call based on the url, calls it and returns the response.
+ */
 public class MockServlet extends HttpServlet {
 
+    @Override
+    public void init() {
+        // Call method to force initialization of the class.
+        MockMethodFinder.INSTANCE.getMethodForUrl("");
+    }
+
+    /**
+     * Return the url that is called, without the base and context. It always starts with a slash.
+     *
+     * @param httpServletRequest The request.
+     */
     public static String determinePathUrl(HttpServletRequest httpServletRequest) {
         return httpServletRequest.getPathInfo();
     }
