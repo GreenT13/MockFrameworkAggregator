@@ -1,9 +1,9 @@
 package com.keylane.mock;
 
-import com.keylane.mock.method.MockUrlMethodCaller;
+import com.keylane.mock.method.MockMethodCaller;
 import com.keylane.mock.response.Response;
 import com.keylane.mock.response.ResponseFiller;
-import com.keylane.mock.url.MockUrlConfiguration;
+import com.keylane.mock.url.MockMethodFinder;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -21,7 +21,7 @@ public class MockServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
         String url = determinePathUrl(httpServletRequest);
-        Method method = MockUrlConfiguration.INSTANCE.getMethodForUrl(url);
+        Method method = MockMethodFinder.INSTANCE.getMethodForUrl(url);
 
         // In the case that no method is found, we return a 404.
         if (method == null) {
@@ -30,10 +30,10 @@ public class MockServlet extends HttpServlet {
             return;
         }
 
-        MockUrlMethodCaller mockUrlMethodCaller = new MockUrlMethodCaller();
+        MockMethodCaller mockMethodCaller = new MockMethodCaller();
         Response response;
         try {
-            response = mockUrlMethodCaller.callMethod(method, httpServletRequest);
+            response = mockMethodCaller.callMethod(method, httpServletRequest);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
             throw new ServletException(e);
         }

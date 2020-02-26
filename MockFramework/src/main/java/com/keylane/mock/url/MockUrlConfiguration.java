@@ -11,13 +11,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-public enum MockUrlConfiguration {
-    INSTANCE;
+public class MockUrlConfiguration {
 
     private HashMap<String, Method> urlMethodMap;
     private HashMap<Pattern, Method> urlMatcherMethodMap;
 
-    MockUrlConfiguration() {
+    private Reflections reflections;
+
+    MockUrlConfiguration(String pathPrefix) {
+        reflections = new Reflections(pathPrefix, new MethodAnnotationsScanner());
+
         initializeUrlMethodMap();
         initializeUrlMatcherMethodMap();
     }
@@ -25,11 +28,10 @@ public enum MockUrlConfiguration {
     private void initializeUrlMethodMap() {
         urlMethodMap = new HashMap<>();
 
-        Reflections reflections = new Reflections("", new MethodAnnotationsScanner());
         Set<Method> mockUrlMethods = reflections.getMethodsAnnotatedWith(MockUrl.class);
         for (Method method : mockUrlMethods) {
             if (!method.getReturnType().equals(Response.class)) {
-                throw new RuntimeException("Return time of " + method.getDeclaringClass().getCanonicalName() + "." + method.getName()
+                throw new RuntimeException("Return type of " + method.getDeclaringClass().getCanonicalName() + "." + method.getName()
                         + " does not return type Response.");
             }
 
@@ -39,7 +41,7 @@ public enum MockUrlConfiguration {
 
             if (mockUrlContainer != null && !StringUtils.isBlank(mockUrlContainer.value())) {
                 String prefix = mockUrlContainer.value();
-                if (!prefix.endsWith("/")) {
+                if (!prefix.endsWith("/") && !url.startsWith("/")) {
                     prefix = prefix + "/";
                 }
 
@@ -61,7 +63,6 @@ public enum MockUrlConfiguration {
     private void initializeUrlMatcherMethodMap() {
         urlMatcherMethodMap = new HashMap<>();
 
-        Reflections reflections = new Reflections("", new MethodAnnotationsScanner());
         Set<Method> mockUrlMethods = reflections.getMethodsAnnotatedWith(MockUrlMatcher.class);
         for (Method method : mockUrlMethods) {
             if (!method.getReturnType().equals(Response.class)) {
@@ -71,21 +72,25 @@ public enum MockUrlConfiguration {
 
             MockUrlMatcher mockUrlMatcher = method.getAnnotation(MockUrlMatcher.class);
             Pattern pattern = Pattern.compile(mockUrlMatcher.value());
-            if (urlMatcherMethodMap.containsKey(pattern)) {
-                throw new RuntimeException("Url matcher '" + mockUrlMatcher.value() + "' is configured twice.");
-            }
 
+            // Pattern object has not overwritten equals method. We can only check for duplicates if we remember the original string.
+            // We won't do that. The user will just have to be careful when using matchers.
             urlMatcherMethodMap.put(pattern, method);
         }
     }
 
     public Method getMethodForUrl(String url) {
+        if (urlMethodMap.containsKey(url)) {
+            return urlMethodMap.get(url);
+        }
+
         for (Map.Entry<Pattern, Method> entry : urlMatcherMethodMap.entrySet()) {
             if (entry.getKey().matcher(url).matches()) {
                 return entry.getValue();
             }
         }
 
-        return urlMethodMap.get(url);
+        // No match could be found, so we return null.
+        return null;
     }
 }
