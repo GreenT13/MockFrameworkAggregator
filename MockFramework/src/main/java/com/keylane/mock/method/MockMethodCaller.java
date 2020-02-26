@@ -18,8 +18,8 @@ import java.util.Map;
  *     <li>{@code String} url
  * </ul>
  */
-public class MockUrlMethodCaller {
-    // Possible parameters are: nothing or body as string.
+public class MockMethodCaller {
+
     public Response callMethod(Method method, HttpServletRequest httpServletRequest) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         List<Object> args = new ArrayList<>();
         for (Parameter parameter : method.getParameters()) {
