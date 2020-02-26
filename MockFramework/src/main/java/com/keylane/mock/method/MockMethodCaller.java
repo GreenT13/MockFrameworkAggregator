@@ -36,6 +36,6 @@ public class MockMethodCaller {
             return parameter.getAnnotation(MockParameter.class).value();
         }
 
-        throw new RuntimeException("Could not determine MockParameterType");
+        throw new RuntimeException("Method contains a parameter without the MockParameter annotation.");
     }
 }
