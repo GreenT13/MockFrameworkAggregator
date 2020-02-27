@@ -1,17 +1,21 @@
 package com.keylane.mock.url;
 
-import com.keylane.mock.response.Response;
-import org.apache.commons.lang3.StringUtils;
-import org.reflections.Reflections;
-import org.reflections.scanners.MethodAnnotationsScanner;
-
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.reflections.Reflections;
+import org.reflections.scanners.MethodAnnotationsScanner;
+
+import com.keylane.mock.response.Response;
+
 public class MockUrlConfiguration {
+    private final static Logger log = LogManager.getLogger(MockUrlConfiguration.class);
 
     private HashMap<String, Method> urlMethodMap;
     private HashMap<Pattern, Method> urlMatcherMethodMap;
@@ -57,6 +61,7 @@ public class MockUrlConfiguration {
             }
 
             urlMethodMap.put(url, method);
+            log.info("Added mapping from url '{}' to {}#{}.", url, method.getDeclaringClass().getName(), method.getName());
         }
     }
 
@@ -76,6 +81,7 @@ public class MockUrlConfiguration {
             // Pattern object has not overwritten equals method. We can only check for duplicates if we remember the original string.
             // We won't do that. The user will just have to be careful when using matchers.
             urlMatcherMethodMap.put(pattern, method);
+            log.info("Added mapping from url matcher '{}' to {}#{}.", mockUrlMatcher.value(), method.getDeclaringClass().getName(), method.getName());
         }
     }
 

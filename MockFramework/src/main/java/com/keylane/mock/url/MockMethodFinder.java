@@ -2,6 +2,9 @@ package com.keylane.mock.url;
 
 import java.lang.reflect.Method;
 
+/**
+ * Singleton instance of {@link MockUrlConfiguration}.
+ */
 public enum MockMethodFinder {
     INSTANCE;
 
