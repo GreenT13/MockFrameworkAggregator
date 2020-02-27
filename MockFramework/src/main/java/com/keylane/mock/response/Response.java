@@ -2,6 +2,10 @@ package com.keylane.mock.response;
 
 import java.util.Map;
 
+/**
+ * Required return object of methods annotated with {@link com.keylane.mock.url.MockUrl} and {@link com.keylane.mock.url.MockUrlMatcher}.
+ * The response object will be used to fill a {@link javax.servlet.http.HttpServletResponse} by {@link ResponseFiller}.
+ */
 public class Response {
     private final Map<String, String> headers;
     private final Integer status;
@@ -29,5 +33,15 @@ public class Response {
 
     public String getBody() {
         return body;
+    }
+
+    @Override
+    public String toString() {
+        return "Response{" +
+                "headers=" + headers +
+                ", status=" + status +
+                ", contentType='" + contentType + '\'' +
+                ", body='" + body + '\'' +
+                '}';
     }
 }
