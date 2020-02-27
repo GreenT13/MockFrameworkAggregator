@@ -23,7 +23,7 @@ public class MockMethodCallerTest {
         HttpServletRequest httpServletRequest = Mockito.mock(HttpServletRequest.class);
 
         // When
-        Object response = mockMethodCaller.callMethod(method, httpServletRequest);
+        Object response = mockMethodCaller.invokeMethod(method, httpServletRequest);
 
         // Then
         assertEquals(MockMethodCaller_TestMethods.NO_PARAMETER_RESPONSE, response);
@@ -41,7 +41,7 @@ public class MockMethodCallerTest {
 
         // When
         //noinspection unchecked
-        Map<String, String> response = (Map<String, String>) mockMethodCaller.callMethod(method, httpServletRequest);
+        Map<String, String> response = (Map<String, String>) mockMethodCaller.invokeMethod(method, httpServletRequest);
 
         // Then
         assertEquals(headerValue, response.get(headerName));
@@ -60,7 +60,7 @@ public class MockMethodCallerTest {
 
         // When
         //noinspection unchecked
-        Map<String, String> response = (Map<String, String>) mockMethodCaller.callMethod(method, httpServletRequest);
+        Map<String, String> response = (Map<String, String>) mockMethodCaller.invokeMethod(method, httpServletRequest);
 
         // Then
         assertEquals(parameterValue, response.get(parameterName));
@@ -75,7 +75,7 @@ public class MockMethodCallerTest {
         Mockito.when(httpServletRequest.getReader()).thenReturn(new BufferedReader(new StringReader(body)));
 
         // When
-        String response = (String) mockMethodCaller.callMethod(method, httpServletRequest);
+        String response = (String) mockMethodCaller.invokeMethod(method, httpServletRequest);
 
         // Then
         assertEquals(body, response);
@@ -90,7 +90,7 @@ public class MockMethodCallerTest {
         Mockito.when(httpServletRequest.getPathInfo()).thenReturn(url);
 
         // When
-        String response = (String) mockMethodCaller.callMethod(method, httpServletRequest);
+        String response = (String) mockMethodCaller.invokeMethod(method, httpServletRequest);
 
         // Then
         assertEquals(url, response);
@@ -105,7 +105,7 @@ public class MockMethodCallerTest {
         Mockito.when(httpServletRequest.getMethod()).thenReturn(verb);
 
         // When
-        String response = (String) mockMethodCaller.callMethod(method, httpServletRequest);
+        String response = (String) mockMethodCaller.invokeMethod(method, httpServletRequest);
 
         // Then
         assertEquals(verb, response);
@@ -118,7 +118,7 @@ public class MockMethodCallerTest {
         HttpServletRequest httpServletRequest = Mockito.mock(HttpServletRequest.class);
 
         // When and then
-        assertThrows(RuntimeException.class, () -> mockMethodCaller.callMethod(method, httpServletRequest));
+        assertThrows(RuntimeException.class, () -> mockMethodCaller.invokeMethod(method, httpServletRequest));
     }
 
 }

@@ -13,10 +13,14 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * Servlet which finds the right mock method to call based on the url, calls it and returns the response.
  */
 public class MockServlet extends HttpServlet {
+    private final static Logger log = LogManager.getLogger(MockServlet.class);
 
     @Override
     public void init() {
@@ -35,23 +39,26 @@ public class MockServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
         String url = determinePathUrl(httpServletRequest);
+        log.debug("Received request on url '{}' with verb {}.", url, httpServletRequest.getMethod());
         Method method = MockMethodFinder.INSTANCE.getMethodForUrl(url);
 
         // In the case that no method is found, we return a 404.
         if (method == null) {
             httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
             httpServletResponse.getWriter().print("Could not find any mock configured on url '" + url + "'.");
+            log.error("Could not find request for url '{}'.", url);
             return;
         }
 
         MockMethodCaller mockMethodCaller = new MockMethodCaller();
         Response response;
         try {
-            response = (Response) mockMethodCaller.callMethod(method, httpServletRequest);
+            response = (Response) mockMethodCaller.invokeMethod(method, httpServletRequest);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
-            throw new ServletException(e);
+            throw new ServletException("Could not call method " + method.getDeclaringClass().getName() + "#" + method.getName(),e);
         }
 
+        log.debug("Method returned: {}", response.toString());
         ResponseFiller.fillHttpServletResponseWithResponse(httpServletResponse, response);
     }
 
