@@ -56,6 +56,19 @@ public class HelloWorld {
                 .create();
     }
 
+    @MockUrl("/hello-world-file")
+    public Response helloWorldFile() {
+        return ResponseBuilder.start()
+                .fillBodyWithFileContent("HelloWorld.xml")
+                .create();
+    }
+
+    @MockUrl("/hello-world-file2")
+    public Response helloWorldFile2() {
+        return ResponseBuilder.start()
+                .fillBodyWithFileContent("mydir/HelloWorld2.xml")
+                .create();
+    }
 
     private Response createMapResponse(Map<String, String> map) {
         StringBuilder stringBuilder = new StringBuilder();
